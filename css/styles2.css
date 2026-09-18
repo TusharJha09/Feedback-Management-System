@@ -1,44 +1,87 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Open+Sans:400,300,600);
+@import url("https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Open+Sans:400,300,600");
+
 *,
 *:before,
 *:after {
   box-sizing: border-box;
-  font-family: "open sans", helvetica, arial, sans;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
+
 body {
-  background-color: gray;
+  margin: 0;
   padding: 20px;
+  background-color: #f3f4f6;
 }
+
+/* Logout button */
 .logout {
-  margin: 0 0 15px auto;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
 }
+
 .logout input {
-  outline: none;
-  border: none;
-  padding: 8px;
-  background-color: #15191a;
-  color: white;
-  font-size: medium;
   width: 85px;
-}
-#students-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-#students-table td {
-  text-align: center;
-  border: 1px solid #15191a;
-  padding: 8px;
-}
-#students-table th {
-  text-align: center;
-  padding: 12px 8px 12px 8px;
+  padding: 8px 12px;
+  border: none;
+  outline: none;
   background-color: #15191a;
-  color: white;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+
+.logout input:hover {
+  background-color: #333;
+}
+
+/* Students table */
+#students-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+#students-table th {
+  padding: 12px 8px;
+  border: 1px solid #15191a;
+  background-color: #15191a;
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+}
+
+#students-table td {
+  padding: 10px 8px;
+  border: 1px solid #d1d5db;
+  text-align: center;
+  color: #333;
+}
+
 #students-table tr {
-  background-color: aliceblue;
+  background-color: #f8fafc;
+  transition: background-color 0.2s ease;
 }
+
 #students-table tr:hover {
-  background-color: gray;
+  background-color: #e5e7eb;
+}
+
+/* Responsive table */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  #students-table {
+    font-size: 13px;
+  }
+
+  #students-table th,
+  #students-table td {
+    padding: 8px 5px;
+  }
 }
