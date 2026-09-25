@@ -1,65 +1,104 @@
-@@ -0,0 +1,70 @@
+<?php
+// 1. Session and configuration MUST be at the very top before any HTML output
+session_start();
+require 'php/config.php';
+
+// Check if user is logged in, otherwise redirect immediately
+if (!isset($_SESSION['login_user'])) {
+    header("Location: index.php");
+    exit();
+}
+
+$userLoggedIn = $_SESSION['login_user'];
+
+// 2. Fetch data with basic error handling
+$query = "SELECT year, sem, date, branch, section, subject, ques1, ques2i, ques2ii, ques2iii, ques2iv, ques2v, ques3, ques4, remarks FROM feedback";
+$result = mysqli_query($con, $query);
+
+$error_message = null;
+if (!$result) {
+    $error_message = "Could not retrieve feedback data: " . mysqli_error($con);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Feedback Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback Details Dashboard</title>
     <link rel="stylesheet" href="css/styles2.css" />
+    <!-- DataTables CSS for advanced search, sorting, and pagination -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
   </head>
   <body>
-    <form action="php/logout.php" method="POST">
-      <div class="logout">
-        <input type="submit" value="Log Out" name="logout" />
-      </div>
-    </form>
-    <?php 
-      session_start();
-      require 'php/config.php';
-      if (isset($_SESSION['login_user'])) {
-        $userLoggedIn = $_SESSION['login_user'];
-        $result = mysqli_query($con,"SELECT * FROM feedback");
-        echo "<table border='1' id='students-table'>
+    <div class="dashboard-container">
+      <header class="dashboard-header">
+        <h1>Feedback Details Dashboard</h1>
+        <form action="php/logout.php" method="POST" class="logout-form">
+          <button type="submit" name="logout" class="btn-logout">Log Out</button>
+        </form>
+      </header>
+
+      <main class="table-responsive">
+        <?php if ($error_message): ?>
+          <div class="alert alert-error"><?php echo htmlspecialchars($error_message); ?></div>
+        <?php else: ?>
+          <table id="feedback-table" class="display cell-border">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Sem</th>
+                <th>Date</th>
+                <th>Branch</th>
+                <th>Section</th>
+                <th>Subject</th>
+                <th>Q1</th>
+                <th>Q2(i)</th>
+                <th>Q2(ii)</th>
+                <th>Q2(iii)</th>
+                <th>Q2(iv)</th>
+                <th>Q2(v)</th>
+                <th>Q3</th>
+                <th>Q4</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php while ($row = mysqli_fetch_assoc($result)): ?>
                 <tr>
-                    <th>Year</th>
-                    <th>Sem</th>
-                    <th>Date</th>
-                    <th>Branch</th>
-                    <th>Section</th>
-                    <th>Subject</th>
-                    <th>Ques1</th>
-                    <th>Ques-2i</th>
-                    <th>Ques-2ii</th>
-                    <th>Ques-2iii</th>
-                    <th>Ques-2iv</th>
-                    <th>Ques-2v</th>
-                    <th>Ques3</th>
-                    <th>Ques4</th>
-                    <th>Remarks</th>
-                </tr>";
-        while($row = mysqli_fetch_array($result)) {
-          echo "<tr>";
-          echo "<td>" . $row['year'] . "</td>";
-          echo "<td>" . $row['sem'] . "</td>";
-          echo "<td>" . $row['date'] . "</td>";
-          echo "<td>" . $row['branch'] . "</td>";
-          echo "<td>" . $row['section'] . "</td>";
-          echo "<td>" . $row['subject'] . "</td>";
-          echo "<td>" . $row['ques1'] . "</td>";
-          echo "<td>" . $row['ques2i'] . "</td>";
-          echo "<td>" . $row['ques2ii'] . "</td>";
-          echo "<td>" . $row['ques2iii'] . "</td>";
-          echo "<td>" . $row['ques2iv'] . "</td>";
-          echo "<td>" . $row['ques2v'] . "</td>";
-          echo "<td>" . $row['ques3'] . "</td>";
-          echo "<td>" . $row['ques4'] . "</td>";
-          echo "<td>" . $row['remarks'] . "</td>";
-          echo "</tr>";
-        }
-        echo "</table>";                                                                    
-      }
-      else {
-        //header("Location: index.php");
-      }
-    ?>
+                  <td><?php echo htmlspecialchars($row['year']); ?></td>
+                  <td><?php echo htmlspecialchars($row['sem']); ?></td>
+                  <td><?php echo htmlspecialchars($row['date']); ?></td>
+                  <td><?php echo htmlspecialchars($row['branch']); ?></td>
+                  <td><?php echo htmlspecialchars($row['section']); ?></td>
+                  <td><?php echo htmlspecialchars($row['subject']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques1']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques2i']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques2ii']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques2iii']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques2iv']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques2v']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques3']); ?></td>
+                  <td><?php echo htmlspecialchars($row['ques4']); ?></td>
+                  <td><?php echo htmlspecialchars($row['remarks']); ?></td>
+                </tr>
+              <?php endwhile; ?>
+            </tbody>
+          </table>
+        <?php endif; ?>
+      </main>
+    </div>
+
+    <!-- jQuery and DataTables JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('#feedback-table').DataTable({
+          "scrollX": true, // Enables horizontal scrolling for wide feedback tables
+          "pageLength": 10  // Limits entries per page for better performance
+        });
+      });
+    </script>
   </body>
 </html>
